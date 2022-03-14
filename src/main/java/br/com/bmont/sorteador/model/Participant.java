@@ -1,6 +1,6 @@
 package br.com.bmont.sorteador.model;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,13 +12,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@Entity
+@Entity(name = "tb_participant")
 public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name="group_id", nullable = false)
     private Group group;
+
+    public Participant(String name, Group group) {
+        this.name = name;
+        this.group = group;
+    }
 }
