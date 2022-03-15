@@ -36,6 +36,7 @@ public class ParticipantService {
         Participant participant = new Participant();
         participant.setName(participantRequestDTO.getName());
         participant.setGroup(group);
+        participant.setActive(true);
         participantRepository.save(participant);
         return participant;
     }
@@ -50,6 +51,12 @@ public class ParticipantService {
         Group group = groupService.getGroupByIdOrThrowBadRequestException(participantRequestDTO.getGroupId());
         participant.setName(participantRequestDTO.getName());
         participant.setGroup(group);
+        participantRepository.save(participant);
+    }
+
+    public void changeActive(Long participantId) {
+        Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
+        participant.setActive(!participant.isActive());
         participantRepository.save(participant);
     }
 }

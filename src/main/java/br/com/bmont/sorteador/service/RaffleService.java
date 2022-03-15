@@ -18,4 +18,10 @@ public class RaffleService {
             Collections.shuffle(participants);
             return participants;
     }
+
+    public List<Participant> getClassifiedActiveParticipants(Long groupId) {
+        List<Participant> participants = participantRepository.findActiveParticipantsByGroupId(groupId);
+        Collections.shuffle(participants);
+        return participants;
+    }
 }

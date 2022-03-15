@@ -22,4 +22,9 @@ public class RaffleController {
     public ResponseEntity<List<Participant>> getClassifiedParticipants(@PathVariable Long groupId){
         return new ResponseEntity<>(raffleService.getClassifiedParticipants(groupId), HttpStatus.OK);
     }
+
+    @GetMapping("/active/{groupId}")
+    public ResponseEntity<List<Participant>> getClassifiedActiveParticipants(@PathVariable Long groupId){
+        return new ResponseEntity<>(raffleService.getClassifiedActiveParticipants(groupId), HttpStatus.OK);
+    }
 }

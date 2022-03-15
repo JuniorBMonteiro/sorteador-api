@@ -11,4 +11,7 @@ import java.util.List;
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
     @Query(value = "select * from tb_participant where group_id = ?1", nativeQuery = true)
     List<Participant> findParticipantsByGroupId(Long groupId);
+
+    @Query(value = "select * from tb_participant where group_id = ?1 and is_active = true", nativeQuery = true)
+    List<Participant> findActiveParticipantsByGroupId(Long groupId);
 }

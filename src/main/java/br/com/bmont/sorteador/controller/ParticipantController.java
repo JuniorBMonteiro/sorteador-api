@@ -38,4 +38,10 @@ public class ParticipantController {
         participantService.updateParticipant(participantId, participantRequestDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PatchMapping("/active/{participantId}")
+    public ResponseEntity<Void> changeActive(@PathVariable Long participantId){
+        participantService.changeActive(participantId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
