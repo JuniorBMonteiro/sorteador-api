@@ -3,6 +3,7 @@ package br.com.bmont.sorteador.service;
 import br.com.bmont.sorteador.dtos.request.ParticipantRequestDTO;
 import br.com.bmont.sorteador.dtos.response.GroupResponseDTO;
 import br.com.bmont.sorteador.dtos.response.ParticipantResponseDTO;
+import br.com.bmont.sorteador.exception.BadRequestException;
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.model.Participant;
 import br.com.bmont.sorteador.repository.GroupRepository;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class ParticipantService {
 
     public Participant getParticipantByIdOrThrowBadRequestException(Long participantId){
         return participantRepository.findById(participantId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participant not found"));
+                .orElseThrow(() -> new BadRequestException("Participant not found"));
     }
 
     public List<ParticipantResponseDTO> getParticipantsByGroupId(Long groupId){
@@ -31,6 +33,7 @@ public class ParticipantService {
         return groupResponseDTO.getParticipants();
     }
 
+    @Transactional
     public Participant addParticipant(ParticipantRequestDTO participantRequestDTO) {
         Group group = groupService.getGroupByIdOrThrowBadRequestException(participantRequestDTO.getGroupId());
         Participant participant = new Participant();
@@ -41,11 +44,13 @@ public class ParticipantService {
         return participant;
     }
 
+    @Transactional
     public void removeParticipant(Long participantId) {
         Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
         participantRepository.delete(participant);
     }
 
+    @Transactional
     public void updateParticipant(Long participantId, ParticipantRequestDTO participantRequestDTO) {
         Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
         Group group = groupService.getGroupByIdOrThrowBadRequestException(participantRequestDTO.getGroupId());
@@ -54,6 +59,7 @@ public class ParticipantService {
         participantRepository.save(participant);
     }
 
+    @Transactional
     public void changeActive(Long participantId) {
         Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
         participant.setActive(!participant.isActive());
