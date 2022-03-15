@@ -4,6 +4,8 @@ import br.com.bmont.sorteador.model.Group;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,7 +28,8 @@ public class GroupResponseDTO {
                 .collect(Collectors.toList());
     }
 
-    public static List<GroupResponseDTO> convert(List<Group> group){
-        return group.stream().map(GroupResponseDTO::new).collect(Collectors.toList());
+    public static Page<GroupResponseDTO> convert(Page<Group> group){
+        List<GroupResponseDTO> groups = group.stream().map(GroupResponseDTO::new).collect(Collectors.toList());
+        return new PageImpl<>(groups);
     }
 }

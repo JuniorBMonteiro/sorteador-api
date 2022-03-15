@@ -5,6 +5,8 @@ import br.com.bmont.sorteador.dtos.response.GroupResponseDTO;
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.service.GroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +21,8 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping
-    public ResponseEntity<List<GroupResponseDTO>> getAllGroups(){
-        return new ResponseEntity<>(groupService.getAllGroups(), HttpStatus.OK);
+    public ResponseEntity<Page<GroupResponseDTO>> getAllGroups(Pageable pageable){
+        return new ResponseEntity<>(groupService.getAllGroups(pageable), HttpStatus.OK);
     }
 
     @PostMapping

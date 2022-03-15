@@ -1,20 +1,17 @@
 package br.com.bmont.sorteador.service;
 
 import br.com.bmont.sorteador.dtos.request.ParticipantRequestDTO;
-import br.com.bmont.sorteador.dtos.response.GroupResponseDTO;
 import br.com.bmont.sorteador.dtos.response.ParticipantResponseDTO;
 import br.com.bmont.sorteador.exception.BadRequestException;
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.model.Participant;
-import br.com.bmont.sorteador.repository.GroupRepository;
 import br.com.bmont.sorteador.repository.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -27,10 +24,11 @@ public class ParticipantService {
                 .orElseThrow(() -> new BadRequestException("Participant not found"));
     }
 
-    public List<ParticipantResponseDTO> getParticipantsByGroupId(Long groupId){
-        Group group = groupService.getGroupByIdOrThrowBadRequestException(groupId);
-        GroupResponseDTO groupResponseDTO = new GroupResponseDTO(group);
-        return groupResponseDTO.getParticipants();
+    public Page<ParticipantResponseDTO> getParticipantsByGroupId(Long groupId, Pageable pageable){
+//        Group group = groupService.getGroupByIdOrThrowBadRequestException(groupId);
+//        GroupResponseDTO groupResponseDTO = new GroupResponseDTO(group);
+        Page<Participant> participants = participantRepository.findParticipantsByGroupId(groupId, pageable);
+        return ParticipantResponseDTO.convert(participants);
     }
 
     @Transactional

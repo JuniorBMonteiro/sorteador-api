@@ -6,6 +6,8 @@ import br.com.bmont.sorteador.exception.BadRequestException;
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,8 +25,8 @@ public class GroupService {
                 .orElseThrow(() -> new BadRequestException("Group not found"));
     }
 
-    public List<GroupResponseDTO> getAllGroups(){
-        return GroupResponseDTO.convert(groupRepository.findAll());
+    public Page<GroupResponseDTO> getAllGroups(Pageable pageable){
+        return GroupResponseDTO.convert(groupRepository.findAll(pageable));
     }
 
     @Transactional
