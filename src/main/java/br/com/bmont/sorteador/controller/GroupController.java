@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<Group> createGroup(@RequestBody GroupRequestDTO groupRequestDTO){
+    public ResponseEntity<Group> createGroup(@RequestBody @Valid GroupRequestDTO groupRequestDTO){
         return new ResponseEntity<>(groupService.createGroup(groupRequestDTO), HttpStatus.CREATED);
     }
 
@@ -34,7 +35,7 @@ public class GroupController {
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<Void> updateGroup(@PathVariable Long groupId, @RequestBody GroupRequestDTO groupRequestDTO){
+    public ResponseEntity<Void> updateGroup(@PathVariable Long groupId, @RequestBody @Valid GroupRequestDTO groupRequestDTO){
         groupService.updateGroup(groupId, groupRequestDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

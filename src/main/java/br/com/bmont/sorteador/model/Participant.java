@@ -24,9 +24,4 @@ public class Participant {
     @JoinColumn(name="group_id", nullable = false)
     private Group group;
     private boolean isActive;
-
-    public Participant(String name, Group group) {
-        this.name = name;
-        this.group = group;
-    }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class ParticipantController {
     }
 
     @PostMapping
-    public ResponseEntity<Participant> addParticipant(@RequestBody ParticipantRequestDTO participantRequestDTO){
+    public ResponseEntity<Participant> addParticipant(@RequestBody @Valid ParticipantRequestDTO participantRequestDTO){
         return new ResponseEntity<>(participantService.addParticipant(participantRequestDTO), HttpStatus.CREATED);
     }
 
@@ -34,7 +35,7 @@ public class ParticipantController {
     }
 
     @PutMapping("/{participantId}")
-    public ResponseEntity<Void> updateParticipantName(@PathVariable Long participantId, @RequestBody ParticipantRequestDTO participantRequestDTO){
+    public ResponseEntity<Void> updateParticipantName(@PathVariable Long participantId, @RequestBody @Valid ParticipantRequestDTO participantRequestDTO){
         participantService.updateParticipant(participantId, participantRequestDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
