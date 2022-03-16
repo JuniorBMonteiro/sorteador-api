@@ -1,6 +1,7 @@
 package br.com.bmont.sorteador.dtos.response;
 
 import br.com.bmont.sorteador.model.Group;
+import br.com.bmont.sorteador.model.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,13 +24,19 @@ public class GroupResponseDTO {
     public GroupResponseDTO(Group group) {
         this.id = group.getId();
         this.name = group.getName();
-        this.participants = group.getParticipants().stream()
-                .map(e -> new ParticipantResponseDTO(e.getId(), e.getName()))
-                .collect(Collectors.toList());
+        this.participants = group.getParticipants() != null
+                ? convertParticipants(group.getParticipants())
+                : null ;
     }
 
     public static Page<GroupResponseDTO> convert(Page<Group> group){
         List<GroupResponseDTO> groups = group.stream().map(GroupResponseDTO::new).collect(Collectors.toList());
         return new PageImpl<>(groups);
+    }
+
+    public static List<ParticipantResponseDTO> convertParticipants(List<Participant> participants){
+        return participants.stream()
+                .map(e -> new ParticipantResponseDTO(e.getId(), e.getName()))
+                .collect(Collectors.toList());
     }
 }

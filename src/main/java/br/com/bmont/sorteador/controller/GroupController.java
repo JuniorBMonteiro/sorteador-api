@@ -9,9 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -21,24 +24,29 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping
-    public ResponseEntity<Page<GroupResponseDTO>> getAllGroups(Pageable pageable){
-        return new ResponseEntity<>(groupService.getAllGroups(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<GroupResponseDTO>> getAllGroups(Pageable pageable,
+                                                               @AuthenticationPrincipal UserDetails userDetails){
+        return new ResponseEntity<>(groupService.getAllGroups(pageable, userDetails), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Group> createGroup(@RequestBody @Valid GroupRequestDTO groupRequestDTO){
-        return new ResponseEntity<>(groupService.createGroup(groupRequestDTO), HttpStatus.CREATED);
+    public ResponseEntity<GroupResponseDTO> createGroup(@RequestBody @Valid GroupRequestDTO groupRequestDTO,
+                                             @AuthenticationPrincipal UserDetails userDetails){
+        return new ResponseEntity<>(groupService.createGroup(groupRequestDTO, userDetails), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<Void> deleteGroup(@PathVariable Long groupId){
-        groupService.deleteGroup(groupId);
+    public ResponseEntity<Void> deleteGroup(@PathVariable Long groupId,
+                                            @AuthenticationPrincipal UserDetails userDetails){
+        groupService.deleteGroup(groupId, userDetails);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<Void> updateGroup(@PathVariable Long groupId, @RequestBody @Valid GroupRequestDTO groupRequestDTO){
-        groupService.updateGroup(groupId, groupRequestDTO);
+    public ResponseEntity<Void> updateGroup(@PathVariable Long groupId,
+                                            @RequestBody @Valid GroupRequestDTO groupRequestDTO,
+                                            @AuthenticationPrincipal UserDetails userDetails){
+        groupService.updateGroup(groupId, groupRequestDTO, userDetails);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
