@@ -1,7 +1,7 @@
 package br.com.bmont.sorteador.service;
 
-import br.com.bmont.sorteador.dtos.request.UserRequestDTO;
-import br.com.bmont.sorteador.dtos.response.UserResponseDTO;
+import br.com.bmont.sorteador.request.UserRequest;
+import br.com.bmont.sorteador.response.UserResponse;
 import br.com.bmont.sorteador.exception.BadRequestException;
 import br.com.bmont.sorteador.model.User;
 import br.com.bmont.sorteador.repository.UserRepository;
@@ -26,19 +26,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO){
+    public UserResponse registerUser(UserRequest userRequest){
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        User userSaved = userRepository.findByUsername(userRequestDTO.getUsername());
+        User userSaved = userRepository.findByUsername(userRequest.getUsername());
         if (userSaved != null)
             throw new BadRequestException("User is already registered ");
 
         User user = User.builder()
-                .name(userRequestDTO.getName())
-                .username(userRequestDTO.getUsername())
-                .password(passwordEncoder.encode(userRequestDTO.getPassword()))
+                .name(userRequest.getName())
+                .username(userRequest.getUsername())
+                .password(passwordEncoder.encode(userRequest.getPassword()))
                 .authorities("USER")
                 .build();
         userRepository.save(user);
-        return new UserResponseDTO(user.getName(), user.getUsername());
+        return new UserResponse(user.getName(), user.getUsername());
     }
 }

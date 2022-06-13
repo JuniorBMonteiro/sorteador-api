@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_group")
+@Table(name = "tb_groups")
 public class Group {
     @EqualsAndHashCode.Include
     @Id
@@ -23,10 +23,9 @@ public class Group {
     private Long id;
     @Column
     private String name;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "group")
     private List<Participant> participants;
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
     private User user;
 }

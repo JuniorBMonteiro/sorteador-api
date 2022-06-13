@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
-    @Query(value = "select * from tb_group where user_id = ?1", nativeQuery = true)
+    @Query("SELECT g FROM Group g WHERE g.user.id = ?1")
     Page<Group> findAllGroupsByUser(Long userId, Pageable pageable);
 
-    @Query(value = "select * from tb_group where id = ?1 and user_id = ?2", nativeQuery = true)
+    @Query("SELECT g FROM Group g WHERE g.id = ?1 AND g.user.id = ?2")
     Group findGroupById(Long groupId, Long userId);
 }

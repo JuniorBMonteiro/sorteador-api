@@ -1,4 +1,4 @@
-package br.com.bmont.sorteador.dtos.request;
+package br.com.bmont.sorteador.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParticipantRequestDTO {
+public class ParticipantRequest {
     @NotEmpty(message = "The participant name cannot be empty")
     private String name;
     @NotNull(message = "The group id cannot be null")

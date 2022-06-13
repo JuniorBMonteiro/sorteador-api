@@ -1,7 +1,8 @@
 package br.com.bmont.sorteador.service;
 
-import br.com.bmont.sorteador.dtos.request.GroupRequestDTO;
-import br.com.bmont.sorteador.dtos.response.GroupResponseDTO;
+import br.com.bmont.sorteador.request.mapper.GroupMapper;
+import br.com.bmont.sorteador.request.GroupRequest;
+import br.com.bmont.sorteador.response.GroupResponse;
 import br.com.bmont.sorteador.exception.BadRequestException;
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.model.User;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -25,35 +25,38 @@ public class GroupService {
                 .orElseThrow(() -> new BadRequestException("Group not found"));
     }
 
-    public Page<GroupResponseDTO> getAllGroups(Pageable pageable, UserDetails userDetails){
+    public Page<GroupResponse> getAllGroups(Pageable pageable, UserDetails userDetails){
         User user = (User) userDetails;
         Page<Group> groups = groupRepository.findAllGroupsByUser(user.getId(), pageable);
-        return GroupResponseDTO.convert(groups);
+        return GroupMapper.toGroupResponse(groups);
     }
 
-    @Transactional
-    public GroupResponseDTO createGroup(GroupRequestDTO groupRequestDTO, UserDetails userDetails){
+    public GroupResponse createGroup(GroupRequest groupRequest, UserDetails userDetails){
         User user = (User) userDetails;
         Group group = Group.builder()
-                .name(groupRequestDTO.getName())
+                .name(groupRequest.getName())
                 .user(user)
                 .build();
-        groupRepository.save(group);
-        return new GroupResponseDTO(group);
+        Group groupSaved = groupRepository.save(group);
+        return GroupMapper.toGroupResponse(groupSaved);
     }
 
-    @Transactional
     public void deleteGroup(Long groupId, UserDetails userDetails) {
         User user = (User) userDetails;
         Group group = getGroupByIdOrThrowBadRequestException(groupId, user.getId());
         groupRepository.delete(group);
     }
 
-    @Transactional
-    public void updateGroup(Long groupId, GroupRequestDTO groupRequestDTO, UserDetails userDetails){
+    public void updateGroup(Long groupId, GroupRequest groupRequest, UserDetails userDetails){
         User user = (User) userDetails;
         Group group = getGroupByIdOrThrowBadRequestException(groupId, user.getId());
-        group.setName(groupRequestDTO.getName());
+        group.setName(groupRequest.getName());
         groupRepository.save(group);
+    }
+
+    public GroupResponse getGroupById(Long groupId, UserDetails userDetails) {
+        User user = (User) userDetails;
+        Group group = getGroupByIdOrThrowBadRequestException(groupId, user.getId());
+        return GroupMapper.toGroupResponse(group);
     }
 }

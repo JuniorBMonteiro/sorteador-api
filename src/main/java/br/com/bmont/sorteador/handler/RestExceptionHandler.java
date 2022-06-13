@@ -1,4 +1,4 @@
-package br.com.bmont.sorteador.dtos.handler;
+package br.com.bmont.sorteador.handler;
 
 import br.com.bmont.sorteador.exception.BadRequestException;
 import br.com.bmont.sorteador.exception.BadRequestExceptionDetails;

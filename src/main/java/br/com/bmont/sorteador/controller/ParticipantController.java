@@ -1,8 +1,7 @@
 package br.com.bmont.sorteador.controller;
 
-import br.com.bmont.sorteador.dtos.request.ParticipantRequestDTO;
-import br.com.bmont.sorteador.dtos.response.ParticipantResponseDTO;
-import br.com.bmont.sorteador.model.Participant;
+import br.com.bmont.sorteador.request.ParticipantRequest;
+import br.com.bmont.sorteador.response.ParticipantResponse;
 import br.com.bmont.sorteador.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,17 +20,10 @@ import javax.validation.Valid;
 public class ParticipantController {
     private final ParticipantService participantService;
 
-    @GetMapping("/group/{groupId}")
-    public ResponseEntity<Page<ParticipantResponseDTO>> getParticipantsByGroupId(@PathVariable Long groupId,
-                                                                                 Pageable pageable,
-                                                                                 @AuthenticationPrincipal UserDetails userDetails){
-        return new ResponseEntity<>(participantService.getParticipantsByGroupId(groupId, pageable, userDetails), HttpStatus.OK);
-    }
-
     @PostMapping
-    public ResponseEntity<Participant> addParticipant(@RequestBody @Valid ParticipantRequestDTO participantRequestDTO,
+    public ResponseEntity<ParticipantResponse> addParticipant(@RequestBody @Valid ParticipantRequest participantRequest,
                                                       @AuthenticationPrincipal UserDetails userDetails){
-        return new ResponseEntity<>(participantService.addParticipant(participantRequestDTO, userDetails), HttpStatus.CREATED);
+        return new ResponseEntity<>(participantService.addParticipant(participantRequest, userDetails), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{participantId}")
@@ -43,9 +35,9 @@ public class ParticipantController {
 
     @PutMapping("/{participantId}")
     public ResponseEntity<Void> updateParticipantName(@PathVariable Long participantId,
-                                                      @RequestBody @Valid ParticipantRequestDTO participantRequestDTO,
+                                                      @RequestBody @Valid ParticipantRequest participantRequest,
                                                       @AuthenticationPrincipal UserDetails userDetails){
-        participantService.updateParticipant(participantId, participantRequestDTO, userDetails);
+        participantService.updateParticipant(participantId, participantRequest, userDetails);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

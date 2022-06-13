@@ -1,19 +1,19 @@
 package br.com.bmont.sorteador.service;
 
-import br.com.bmont.sorteador.dtos.request.ParticipantRequestDTO;
-import br.com.bmont.sorteador.dtos.response.ParticipantResponseDTO;
 import br.com.bmont.sorteador.exception.BadRequestException;
+import br.com.bmont.sorteador.repository.GroupRepository;
+import br.com.bmont.sorteador.request.mapper.ParticipantMapper;
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.model.Participant;
 import br.com.bmont.sorteador.model.User;
 import br.com.bmont.sorteador.repository.ParticipantRepository;
+import br.com.bmont.sorteador.request.ParticipantRequest;
+import br.com.bmont.sorteador.response.GroupResponse;
+import br.com.bmont.sorteador.response.ParticipantResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,62 +21,58 @@ import java.util.List;
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final GroupService groupService;
+    private final GroupRepository groupRepository;
 
-    public Participant getParticipantByIdOrThrowBadRequestException(Long participantId){
+    private Participant getParticipantByIdOrThrowBadRequestException(Long participantId){
         return participantRepository.findById(participantId)
                 .orElseThrow(() -> new BadRequestException("Participant not found"));
     }
 
-    public Page<ParticipantResponseDTO> getParticipantsByGroupId(Long groupId, Pageable pageable, UserDetails userDetails){
-        User user = (User) userDetails;
-        Group group = groupService.getGroupByIdOrThrowBadRequestException(groupId, user.getId());
-        Page<Participant> participants = participantRepository.findParticipantsByGroupId(group.getId(), pageable);
-        return ParticipantResponseDTO.convert(participants);
-    }
-
-    @Transactional
-    public Participant addParticipant(ParticipantRequestDTO participantRequestDTO, UserDetails userDetails) {
+    public ParticipantResponse addParticipant(ParticipantRequest participantRequest, UserDetails userDetails) {
         User user = (User) userDetails;
         Group group = groupService.getGroupByIdOrThrowBadRequestException(
-                participantRequestDTO.getGroupId(), user.getId());
+                participantRequest.getGroupId(), user.getId());
         Participant participant = Participant.builder()
-                .name(participantRequestDTO.getName())
+                .name(participantRequest.getName())
                 .group(group)
                 .isActive(true)
                 .build();
-        return participantRepository.save(participant);
+        Participant participantSaved = participantRepository.save(participant);
+        return ParticipantMapper.toParticipantResponse(participantSaved);
     }
 
-    @Transactional
     public void removeParticipant(Long participantId, UserDetails userDetails) {
         User user = (User) userDetails;
         Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
-        List<Group> groups = user.getGroups();
-        groups.stream().filter(e -> e.equals(participant.getGroup()))
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException("Not Permission"));
+        if (isNotPermitted(participant, user)){
+            throw new BadRequestException("Participant not found");
+        }
         participantRepository.delete(participant);
     }
 
-    @Transactional
-    public void updateParticipant(Long participantId, ParticipantRequestDTO participantRequestDTO, UserDetails userDetails) {
+    public void updateParticipant(Long participantId, ParticipantRequest participantRequest, UserDetails userDetails) {
         User user = (User) userDetails;
         Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
-        user.getGroups().stream().filter(e -> e.equals(participant.getGroup()))
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException("Not Permission"));
-        participant.setName(participantRequestDTO.getName());
+        if (isNotPermitted(participant, user)){
+            throw new BadRequestException("Participant not found");
+        }
+        participant.setName(participantRequest.getName());
         participantRepository.save(participant);
     }
 
-    @Transactional
     public void changeActive(Long participantId, UserDetails userDetails) {
         User user = (User) userDetails;
         Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
-        user.getGroups().stream().filter(e -> e.equals(participant.getGroup()))
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException("Not Permission"));
+        if (isNotPermitted(participant, user)){
+            throw new BadRequestException("Participant not found");
+        }
         participant.setActive(!participant.isActive());
         participantRepository.save(participant);
+    }
+
+    private boolean isNotPermitted(Participant participant, User user){
+        Long userIdByParticipant = participant.getGroup().getUser().getId();
+        Long userId = user.getId();
+        return !userIdByParticipant.equals(userId);
     }
 }

@@ -1,4 +1,4 @@
-package br.com.bmont.sorteador.dtos.request;
+package br.com.bmont.sorteador.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDTO {
+public class UserRequest {
     @NotEmpty(message = "The user name cannot be empty")
     private String name;
     @NotEmpty(message = "The username cannot be empty")

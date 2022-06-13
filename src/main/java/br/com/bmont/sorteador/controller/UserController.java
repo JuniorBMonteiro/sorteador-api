@@ -1,8 +1,7 @@
 package br.com.bmont.sorteador.controller;
 
-import br.com.bmont.sorteador.dtos.request.UserRequestDTO;
-import br.com.bmont.sorteador.dtos.response.UserResponseDTO;
-import br.com.bmont.sorteador.model.User;
+import br.com.bmont.sorteador.request.UserRequest;
+import br.com.bmont.sorteador.response.UserResponse;
 import br.com.bmont.sorteador.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,12 +12,12 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserDetailsServiceImpl userDetailsService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> userRegister(@Valid @RequestBody UserRequestDTO userRequestDTO){
-        return new ResponseEntity<>(userDetailsService.registerUser(userRequestDTO), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<UserResponse> userRegister(@Valid @RequestBody UserRequest userRequest){
+        return new ResponseEntity<>(userDetailsService.registerUser(userRequest), HttpStatus.OK);
     }
 }
