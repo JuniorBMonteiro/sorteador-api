@@ -1,8 +1,10 @@
 package br.com.bmont.sorteador.controller;
 
-import br.com.bmont.sorteador.model.Participant;
 import br.com.bmont.sorteador.response.ParticipantResponse;
 import br.com.bmont.sorteador.service.RaffleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,20 +17,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/raffles")
 public class RaffleController {
     private final RaffleService raffleService;
 
+    @Operation(summary = "Get Classified Participants Paginated")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation"),
+            @ApiResponse(responseCode = "400", description = "When group does not exist")
+    })
     @GetMapping("/{groupId}")
     public ResponseEntity<Page<ParticipantResponse>> getClassifiedParticipants(@PathVariable Long groupId, Pageable pageable,
                                                                                @AuthenticationPrincipal UserDetails userDetails){
         return new ResponseEntity<>(raffleService.getClassifiedParticipants(groupId, pageable, userDetails), HttpStatus.OK);
     }
-
+    @Operation(summary = "Get Classified Active Participants Paginated")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation"),
+            @ApiResponse(responseCode = "400", description = "When group does not exist")
+    })
     @GetMapping("/active/{groupId}")
     public ResponseEntity<Page<ParticipantResponse>> getClassifiedActiveParticipants(@PathVariable Long groupId, Pageable pageable,
                                                                              @AuthenticationPrincipal UserDetails userDetails){

@@ -1,7 +1,6 @@
 package br.com.bmont.sorteador.model;
 
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 

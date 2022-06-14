@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         User userSaved = userRepository.findByUsername(userRequest.getUsername());
         if (userSaved != null)
-            throw new BadRequestException("User is already registered ");
+            throw new BadRequestException("User is already registered");
 
         User user = User.builder()
                 .name(userRequest.getName())

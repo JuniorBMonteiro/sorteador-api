@@ -1,8 +1,7 @@
 package br.com.bmont.sorteador.service;
 
 import br.com.bmont.sorteador.exception.BadRequestException;
-import br.com.bmont.sorteador.request.mapper.ParticipantMapper;
-import br.com.bmont.sorteador.model.Group;
+import br.com.bmont.sorteador.mapper.ParticipantMapper;
 import br.com.bmont.sorteador.model.Participant;
 import br.com.bmont.sorteador.model.User;
 import br.com.bmont.sorteador.repository.GroupRepository;
@@ -24,17 +23,17 @@ public class RaffleService {
 
     public Page<ParticipantResponse> getClassifiedParticipants(Long groupId, Pageable pageable, UserDetails userDetails) {
         User user = (User) userDetails;
-        Group group = Optional.ofNullable(groupRepository.findGroupById(groupId, user.getId()))
+        Optional.ofNullable(groupRepository.findGroupById(groupId, user.getId()))
                 .orElseThrow(() -> new BadRequestException("Group not found"));
-        Page<Participant> participants = participantRepository.findParticipantsByGroupId(group.getId(), pageable);
+        Page<Participant> participants = participantRepository.findParticipantsByGroupIdOrderByRandom(groupId, pageable);
         return ParticipantMapper.toParticipantResponse(participants);
     }
 
     public Page<ParticipantResponse> getClassifiedActiveParticipants(Long groupId, Pageable pageable, UserDetails userDetails) {
         User user = (User) userDetails;
-        Group group = Optional.ofNullable(groupRepository.findGroupById(groupId, user.getId()))
+        Optional.ofNullable(groupRepository.findGroupById(groupId, user.getId()))
                 .orElseThrow(() -> new BadRequestException("Group not found"));
-        Page<Participant> participants = participantRepository.findActiveParticipantsByGroupId(group.getId(), pageable);
+        Page<Participant> participants = participantRepository.findActiveParticipantsByGroupIdOrderByRandom(groupId, pageable);
         return ParticipantMapper.toParticipantResponse(participants);
     }
 }

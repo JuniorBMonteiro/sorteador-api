@@ -1,4 +1,4 @@
-package br.com.bmont.sorteador.request.mapper;
+package br.com.bmont.sorteador.mapper;
 
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.response.GroupResponse;

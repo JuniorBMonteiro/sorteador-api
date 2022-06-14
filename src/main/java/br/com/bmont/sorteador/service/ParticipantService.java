@@ -1,20 +1,21 @@
 package br.com.bmont.sorteador.service;
 
 import br.com.bmont.sorteador.exception.BadRequestException;
-import br.com.bmont.sorteador.repository.GroupRepository;
-import br.com.bmont.sorteador.request.mapper.ParticipantMapper;
+import br.com.bmont.sorteador.mapper.ParticipantMapper;
 import br.com.bmont.sorteador.model.Group;
 import br.com.bmont.sorteador.model.Participant;
 import br.com.bmont.sorteador.model.User;
+import br.com.bmont.sorteador.repository.GroupRepository;
 import br.com.bmont.sorteador.repository.ParticipantRepository;
 import br.com.bmont.sorteador.request.ParticipantRequest;
-import br.com.bmont.sorteador.response.GroupResponse;
 import br.com.bmont.sorteador.response.ParticipantResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +27,14 @@ public class ParticipantService {
     private Participant getParticipantByIdOrThrowBadRequestException(Long participantId){
         return participantRepository.findById(participantId)
                 .orElseThrow(() -> new BadRequestException("Participant not found"));
+    }
+
+    public Page<ParticipantResponse> getAllParticipants(Long groupId, Pageable pageable, UserDetails userDetails) {
+        User user = (User) userDetails;
+        Optional.ofNullable(groupRepository.findGroupById(groupId, user.getId()))
+                .orElseThrow(() -> new BadRequestException("Group not found"));
+        Page<Participant> participants = participantRepository.findParticipantsByGroupId(groupId, pageable);
+        return ParticipantMapper.toParticipantResponse(participants);
     }
 
     public ParticipantResponse addParticipant(ParticipantRequest participantRequest, UserDetails userDetails) {

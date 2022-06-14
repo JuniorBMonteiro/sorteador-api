@@ -1,6 +1,6 @@
 package br.com.bmont.sorteador.service;
 
-import br.com.bmont.sorteador.request.mapper.GroupMapper;
+import br.com.bmont.sorteador.mapper.GroupMapper;
 import br.com.bmont.sorteador.request.GroupRequest;
 import br.com.bmont.sorteador.response.GroupResponse;
 import br.com.bmont.sorteador.exception.BadRequestException;
@@ -47,7 +47,7 @@ public class GroupService {
         groupRepository.delete(group);
     }
 
-    public void updateGroup(Long groupId, GroupRequest groupRequest, UserDetails userDetails){
+    public void updateGroupName(Long groupId, GroupRequest groupRequest, UserDetails userDetails){
         User user = (User) userDetails;
         Group group = getGroupByIdOrThrowBadRequestException(groupId, user.getId());
         group.setName(groupRequest.getName());
