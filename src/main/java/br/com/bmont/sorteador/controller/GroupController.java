@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class GroupController {
     @Operation(summary = "Get All Groups Paginated")
     @ApiResponse(responseCode = "200", description = "Successful Operation")
     @GetMapping
-    public ResponseEntity<Page<GroupResponse>> getAllGroups(Pageable pageable,
+    public ResponseEntity<Page<GroupResponse>> getAllGroups(@ParameterObject Pageable pageable,
                                                             @AuthenticationPrincipal UserDetails userDetails){
         return new ResponseEntity<>(groupService.getAllGroups(pageable, userDetails), HttpStatus.OK);
     }

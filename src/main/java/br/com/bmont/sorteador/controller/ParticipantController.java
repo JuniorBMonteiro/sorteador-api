@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,8 @@ public class ParticipantController {
             @ApiResponse(responseCode = "400", description = "When group does not exist")
     })
     @GetMapping("/{groupId}")
-    public ResponseEntity<Page<ParticipantResponse>> getAllParticipants(@PathVariable Long groupId, Pageable pageable,
+    public ResponseEntity<Page<ParticipantResponse>> getAllParticipants(@PathVariable Long groupId,
+                                                                        @ParameterObject Pageable pageable,
                                                             @AuthenticationPrincipal UserDetails userDetails){
         return new ResponseEntity<>(participantService.getAllParticipants(groupId, pageable, userDetails), HttpStatus.OK);
     }

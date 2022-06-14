@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,8 @@ public class RaffleController {
             @ApiResponse(responseCode = "400", description = "When group does not exist")
     })
     @GetMapping("/{groupId}")
-    public ResponseEntity<Page<ParticipantResponse>> getClassifiedParticipants(@PathVariable Long groupId, Pageable pageable,
+    public ResponseEntity<Page<ParticipantResponse>> getClassifiedParticipants(@PathVariable Long groupId,
+                                                                               @ParameterObject Pageable pageable,
                                                                                @AuthenticationPrincipal UserDetails userDetails){
         return new ResponseEntity<>(raffleService.getClassifiedParticipants(groupId, pageable, userDetails), HttpStatus.OK);
     }
@@ -39,7 +41,8 @@ public class RaffleController {
             @ApiResponse(responseCode = "400", description = "When group does not exist")
     })
     @GetMapping("/active/{groupId}")
-    public ResponseEntity<Page<ParticipantResponse>> getClassifiedActiveParticipants(@PathVariable Long groupId, Pageable pageable,
+    public ResponseEntity<Page<ParticipantResponse>> getClassifiedActiveParticipants(@PathVariable Long groupId,
+                                                                                     @ParameterObject Pageable pageable,
                                                                              @AuthenticationPrincipal UserDetails userDetails){
         return new ResponseEntity<>(raffleService.getClassifiedActiveParticipants(groupId, pageable, userDetails), HttpStatus.OK);
     }
