@@ -8,6 +8,7 @@ import br.com.bmont.sorteador.model.User;
 import br.com.bmont.sorteador.repository.GroupRepository;
 import br.com.bmont.sorteador.repository.ParticipantRepository;
 import br.com.bmont.sorteador.request.ParticipantRequest;
+import br.com.bmont.sorteador.request.NameRequest;
 import br.com.bmont.sorteador.response.ParticipantResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -59,13 +60,13 @@ public class ParticipantService {
         participantRepository.delete(participant);
     }
 
-    public void updateParticipant(Long participantId, ParticipantRequest participantRequest, UserDetails userDetails) {
+    public void updateParticipant(Long participantId, NameRequest nameRequest, UserDetails userDetails) {
         User user = (User) userDetails;
         Participant participant = getParticipantByIdOrThrowBadRequestException(participantId);
         if (isNotPermitted(participant, user)){
             throw new BadRequestException("Participant not found");
         }
-        participant.setName(participantRequest.getName());
+        participant.setName(nameRequest.getName());
         participantRepository.save(participant);
     }
 

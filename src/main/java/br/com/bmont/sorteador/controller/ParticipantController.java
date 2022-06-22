@@ -1,7 +1,7 @@
 package br.com.bmont.sorteador.controller;
 
 import br.com.bmont.sorteador.request.ParticipantRequest;
-import br.com.bmont.sorteador.response.GroupResponse;
+import br.com.bmont.sorteador.request.NameRequest;
 import br.com.bmont.sorteador.response.ParticipantResponse;
 import br.com.bmont.sorteador.service.ParticipantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -67,9 +67,9 @@ public class ParticipantController {
     })
     @PatchMapping("/{participantId}")
     public ResponseEntity<Void> updateParticipantName(@PathVariable Long participantId,
-                                                      @RequestBody @Valid ParticipantRequest participantRequest,
+                                                      @RequestBody @Valid NameRequest nameRequest,
                                                       @AuthenticationPrincipal UserDetails userDetails){
-        participantService.updateParticipant(participantId, participantRequest, userDetails);
+        participantService.updateParticipant(participantId, nameRequest, userDetails);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
